@@ -1,0 +1,223 @@
+Of course. Here is the complete HTML code with the `<script type="module">` section updated as you requested.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDC Idea Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom font for a clean look */
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #000000; /* Black background as per branding */
+            color: #ffffff; /* Default text color for body on black background */
+        }
+        /* Basic styling for the loading spinner */
+        .spinner {
+            border: 4px solid rgba(246, 168, 36, 0.5); /* Accent color for spinner border */
+            border-left-color: #f6a824; /* Solid accent color for spinner animation */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Container styling */
+        .container-box {
+            background-color: #ffffff; /* White background for the main content box */
+            padding: 2rem;
+            border-radius: 1rem; /* rounded-2xl */
+            box-shadow: 0 10px 15px -3px rgba(246, 168, 36, 0.2), 0 4px 6px -2px rgba(246, 168, 36, 0.1); /* Accent color shadow */
+            width: 100%;
+            max-width: 42rem; /* max-w-2xl */
+            text-align: center;
+        }
+        /* Headline styling */
+        .main-headline {
+            color: #000000; /* Black text for readability on white background */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        /* Paragraph text styling */
+        .description-paragraph {
+            color: #4a4a4a; /* Darker gray for readability on white background */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+        /* Textarea styling */
+        textarea {
+            width: 100%;
+            padding: 0.75rem; /* p-3 */
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 1rem;
+            color: #000000 !important; /* Ensured black text color for typed input with !important */
+            resize: vertical; /* resize-y */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        textarea::placeholder {
+            color: #888; /* Slightly lighter placeholder text */
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #f6a824; /* Accent color on focus */
+            box-shadow: 0 0 0 2px rgba(246, 168, 36, 0.3); /* Accent color ring */
+        }
+        /* Button styling */
+        .generate-button {
+            background-color: #f6a824; /* Accent color for button */
+            color: #000000; /* Black text on accent button */
+            font-weight: bold;
+            padding: 0.75rem 2rem; /* py-3 px-8 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(246, 168, 36, 0.1), 0 2px 4px -1px rgba(246, 168, 36, 0.06); /* Accent color shadow */
+            transition: all 0.3s ease-in-out;
+            transform: scale(1); /* Initial scale */
+        }
+        .generate-button:hover {
+            background-color: #e0971b; /* Darker accent on hover */
+            transform: scale(1.05);
+        }
+        .generate-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(246, 168, 36, 0.5); /* Accent color ring on focus */
+        }
+        .generate-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: scale(1); /* No scale on disabled */
+            box-shadow: none;
+        }
+        /* Loading indicator text */
+        .loading-text {
+            color: #f6a824; /* Accent color for loading text */
+        }
+        /* Results output styling */
+        .results-section h2 {
+            color: #000000; /* Black for results heading */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .idea-box {
+            background-color: #fffbeb; /* Very light yellow/orange from branding for idea boxes */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1rem; /* mb-4 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Default shadow */
+            border: 1px solid #fbd38d; /* Lighter accent border */
+        }
+        .idea-box h3 {
+            color: #92400E; /* Dark amber/brown for idea titles */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .idea-box p {
+            color: #4a4a4a; /* Darker gray for idea descriptions */
+        }
+        /* Error message styling */
+        .error-message {
+            color: #cc0000; /* Standard red for errors */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container-box">
+        <h1 class="text-3xl font-bold main-headline">EDC Idea Generator</h1>
+        <p class="description-paragraph">Enter your area of expertise below, and I'll generate 3 unique Email Delivered Course ideas for you!</p>
+
+        <textarea
+            id="expertiseInput"
+            placeholder="e.g., Digital Marketing for Small Businesses, Mastering Guitar Solos, Healthy Meal Prep for Busy Parents"
+        ></textarea>
+
+        <button
+            id="generateButton"
+            class="generate-button"
+        >
+            Generate Ideas
+        </button>
+
+        <div id="loadingIndicator" class="hidden mt-8 flex justify-center items-center">
+            <div class="spinner"></div>
+            <p class="ml-3 loading-text">Generating ideas...</p>
+        </div>
+
+        <div id="resultsOutput" class="mt-8 text-left results-section">
+            </div>
+
+        <div id="errorMessage" class="hidden mt-4 error-message">
+            <p>An error occurred: Please try again or refine your input.</p>
+        </div>
+    </div>
+
+    <script type="module">
+      const expertiseInput = document.getElementById('expertiseInput');
+      const generateButton = document.getElementById('generateButton');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      const resultsOutput = document.getElementById('resultsOutput');
+      const errorMessage = document.getElementById('errorMessage');
+
+      generateButton.addEventListener('click', async () => {
+        const expertise = expertiseInput.value.trim();
+
+        if (!expertise) {
+          resultsOutput.innerHTML = '';
+          errorMessage.textContent = "Please enter your area of expertise to generate ideas.";
+          errorMessage.classList.remove('hidden');
+          return;
+        }
+
+        resultsOutput.innerHTML = '';
+        errorMessage.classList.add('hidden');
+        loadingIndicator.classList.remove('hidden');
+        generateButton.disabled = true;
+
+        try {
+          const response = await fetch("/api/edc", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ expertise })
+          });
+
+          if (!response.ok) {
+            const errorDetail = await response.text();
+            throw new Error(`API error: ${response.status} - ${errorDetail}`);
+          }
+
+          const ideas = await response.json();
+
+          if (Array.isArray(ideas) && ideas.length > 0) {
+            let htmlContent = '<h2 class="text-2xl font-semibold main-headline">Your EDC Ideas:</h2>';
+            ideas.forEach((idea, index) => {
+              htmlContent += `
+                <div class="idea-box">
+                  <h3 class="text-xl font-bold">${index + 1}. ${idea.title}</h3>
+                  <p>${idea.description}</p>
+                </div>
+              `;
+            });
+            resultsOutput.innerHTML = htmlContent;
+          } else {
+            errorMessage.textContent = "Could not parse ideas from the response. Please try again.";
+            errorMessage.classList.remove('hidden');
+          }
+
+        } catch (error) {
+          console.error("Error generating ideas:", error);
+          errorMessage.textContent = `An error occurred: ${error.message}`;
+          errorMessage.classList.remove('hidden');
+        } finally {
+          loadingIndicator.classList.add('hidden');
+          generateButton.disabled = false;
+        }
+      });
+    </script>
+</body>
+</html>
+```
